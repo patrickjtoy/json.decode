@@ -1,5 +1,4 @@
 [ignore]
-.*/node_modules/**
 
 [include]
 flow-typed/
@@ -9,4 +8,4 @@ flow-typed/
 [lints]
 
 [options]
-all=true
+suppress_comment= \\(.\\|\n\\)*\\$FlowIgnore
