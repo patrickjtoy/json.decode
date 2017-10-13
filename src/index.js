@@ -1,32 +1,25 @@
-// Vendor
-import { create, env } from 'sanctuary';
-import { Result } from 'folktale';
+// @flow
 
-const S = create({ checkTypes: process.env.NODE_ENV !== 'production', env });
+import { string } from "./json";
+import { decodeString } from "./decode";
 
-// A value that knows how to decode JSON values.
-type Decoder<a> = string => {
-  isValid: () => boolean,
-  parse: () => a
-};
+(function() {
+  const a = decodeString(string, '"hello world"');
+  const b = decodeString(string, "42");
 
-const string: Decoder<string> = (value: string) => ({
-  isValid: () => S.is(String),
-  parse: () => value.toString()
-});
-// const number: Decoder<number> = () => {};
-// const boolean: Decoder<boolean> = () => {};
+  console.log("expect decodeString to be Ok", a);
+  console.log("expect decodeString to be Error", b);
 
-// decodeString : Decoder a -> string -> Result string a
-const decodeString = <a>(
-  decoder: Decoder<a>,
-  value: string
-): Result<string, a> => {
-  const _decoder = decoder(value);
+  const matchedA = a.matchWith({
+    Ok: ({ value }) => `Ok: ${value}`,
+    Error: ({ value }) => `Error: ${value}`
+  });
 
-  _decoder.isValid()
-    ? Result.Ok(_decoder.parse())
-    : Result.Error(
-        `Expecting a ${decoder.name}, but instead got: ${typeof value}`
-      );
-};
+  const matchedB = b.matchWith({
+    Ok: ({ value }) => `Ok: ${value}`,
+    Error: ({ value }) => `Error: ${value}`
+  });
+
+  console.log("expect matchedA to be Ok", matchedA);
+  console.log("expect matchedB to be Error", matchedB);
+})();
